@@ -3,12 +3,16 @@
 # e.g. [3,4,9,6,1] return [1,1,2,1,0]
 
 # this solution take O(n) time and O(n) space
+import bisect
+
+
 def smaller_counts(array):
     result = []
     for i, number in enumerate(array):
         count = sum(item < number for item in array[i + 1:])
         result.append(count)
     return result
+
 
 # best case scenario would take O(n) time and O(n) space
 # worest case scenario when they are already sorted would take O(n^2) time and O(n) space
@@ -24,5 +28,17 @@ def smaller_counts2(array):
             index_counter += 1
     return result
 
+# run in nlog(n) time and o(n) space
+def smaller_counts3(array):
+    result = []
+    seen = []
+    for number in reversed(array):
+        # finding the best location to insert in it the number in a way that does not disturb the sorted manner
+        proper_location = bisect.bisect_left(seen, number)
+        result.append(proper_location)
+        bisect.insort(seen, number)
+    return list(reversed(result))
+
+
 if __name__ == '__main__':
-    print(smaller_counts2([3, 4, 9, 6, 1]))
+    print(smaller_counts3([3, 4, 9, 6, 1]))
